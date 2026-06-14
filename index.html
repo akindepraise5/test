@@ -137,15 +137,16 @@
   }
 
   .brand-logo {
-    font-family: "Hanken Grotesk", sans-serif;
-    font-weight: 800;
-    font-size: 30px;
-    letter-spacing: -0.04em;
-    color: var(--white);
+    display: inline-flex;
+    align-items: center;
     line-height: 1;
     white-space: nowrap;
   }
-  .brand-logo sup { font-size: 0.5em; font-weight: 600; top: -0.9em; }
+  .brand-logo img {
+    height: 28px;
+    width: auto;
+    display: block;
+  }
 
   .nav-links {
     display: flex;
@@ -341,18 +342,47 @@
     .nav-links, .navbar > .call-btn { display: none; }
     .nav-toggle { display: inline-flex; }
 
+    /* Van image: shift to show person on the left side on mobile */
+    .van-frame {
+      object-position: 35% center;
+    }
+
+    /* Strong dark gradient at the bottom — creates a solid dark band for text */
+    .hero-sticky::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(40, 0, 22, 0) 40%,
+        rgba(40, 0, 22, 0.55) 58%,
+        rgba(40, 0, 22, 0.88) 72%,
+        rgba(40, 0, 22, 0.96) 85%,
+        rgba(40, 0, 22, 1) 100%
+      );
+    }
+
+    /* Push the text content into the dark band */
+    .hero-bottom {
+      padding-top: clamp(20px, 4vh, 40px);
+      padding-bottom: clamp(24px, 4vh, 40px);
+    }
     .hero-bottom-inner {
       grid-template-columns: 1fr;
       align-items: start;
-      gap: 16px;
-      /* keep the 26px inset so the headline stays aligned with the navbar logo */
+      gap: 14px;
     }
-    .hero-body { max-width: 560px; }
+    .hero-title {
+      font-size: clamp(36px, 9vw, 52px);
+    }
+    .hero-body {
+      max-width: 560px;
+      font-size: 16px;
+    }
+    .hero-ctas {
+      margin-top: clamp(16px, 2.5vh, 24px);
+    }
   }
 
   @media (max-width: 520px) {
-    .hero-ctas { flex-direction: column; align-items: stretch; }
-    .btn { width: 100%; justify-content: center; }
+    .btn { height: 54px; padding: 0 24px; font-size: 15px; }
   }
 
   /* ============================================================
@@ -787,13 +817,13 @@
     width: 64px;
     height: 56px;
     border-radius: 16px;
-    background: #050505;
-    color: var(--brand);
-    border: none;
+    background: transparent;
+    color: #050505;
+    border: 2px solid rgba(0, 0, 0, 0.18);
     cursor: pointer;
-    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease), background 0.2s var(--ease);
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
   }
-  .work-nav button:hover { transform: translateY(-2px); background: #1a1a1a; }
+  .work-nav button:hover { transform: translateY(-2px); border-color: #050505; background: rgba(0, 0, 0, 0.04); }
   .work-nav button:focus-visible { outline: 3px solid rgba(236, 0, 140, 0.55); outline-offset: 3px; }
   .work-nav button:disabled { opacity: 0.35; cursor: default; transform: none; }
   .work-nav svg { width: 22px; height: 22px; }
@@ -1227,14 +1257,14 @@
     position: absolute;
     left: -8px;
     bottom: 18px;
-    font-family: "Hanken Grotesk", sans-serif;
-    font-weight: 800;
-    font-size: clamp(110px, 17vw, 280px);
-    letter-spacing: -0.06em;
-    line-height: 0.78;
-    color: rgba(255, 255, 255, 0.045);
+    opacity: 0.045;
     user-select: none;
     pointer-events: none;
+  }
+  .f-watermark img {
+    height: clamp(90px, 14vw, 230px);
+    width: auto;
+    display: block;
   }
   .f-certs { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: 22px; }
   .cert-img { height: 96px; width: auto; display: block; }
@@ -1249,14 +1279,15 @@
   .cert.hs .mark .check svg { color: #1A1A1A; }
   .cert.q .mark { background: #E0301E; }
   .f-logo {
-    font-family: "Hanken Grotesk", sans-serif;
-    font-weight: 800;
-    font-size: 46px;
-    letter-spacing: -0.04em;
-    color: var(--brand);
+    display: inline-flex;
+    align-items: center;
     margin-left: 8px;
   }
-  .f-logo sup { font-size: 0.4em; top: -1.1em; }
+  .f-logo img {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
 
   .f-bottom {
     display: flex;
@@ -1326,7 +1357,7 @@
     <!-- ===================== NAVBAR ===================== -->
     <header class="nav-wrap">
       <nav class="navbar" aria-label="Primary">
-        <a href="#" class="brand-logo" aria-label="Ten10 home">Ten1O<sup>&reg;</sup></a>
+        <a href="#" class="brand-logo" aria-label="Ten10 home"><img src="assets/Logo/Ten10-logo-White.svg" alt="Ten10" width="300" height="96" /></a>
 
         <ul class="nav-links">
           <li><a href="#about">About Us</a></li>
@@ -1668,12 +1699,12 @@
 
       <!-- watermark + certifications -->
       <div class="f-mid">
-        <span class="f-watermark" aria-hidden="true">Ten1O</span>
+        <span class="f-watermark" aria-hidden="true"><img src="assets/Logo/Ten10-logo-White.svg" alt="" /></span>
         <div class="f-certs">
           <img class="cert-img" src="assets/certifications/Environment-ISO-14001.png.webp" alt="Telarc registered — Environment, ISO 14001" loading="lazy">
           <img class="cert-img" src="assets/certifications/Health-Safety-ISO-45001-715x1536.png.webp" alt="Telarc registered — Health and Safety, ISO 45001" loading="lazy">
           <img class="cert-img" src="assets/certifications/Quality-ISO-9001.png.webp" alt="Telarc registered — Quality, ISO 9001" loading="lazy">
-          <span class="f-logo">Ten1O<sup>&reg;</sup></span>
+          <span class="f-logo"><img src="assets/Logo/Ten10-logo-Pink.svg" alt="Ten10" width="329" height="93" /></span>
         </div>
       </div>
 
