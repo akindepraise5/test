@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ten10 — Commercial Painting Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     Ten10 — Hero Section (navbar + hero only)
+     Brand tokens
+  ============================================================ */
+  :root {
+    --brand: #EC008C;            /* Ten10 pink */
+    --brand-deep: #7A0048;       /* burgundy depth */
+    --brand-glow: #FF2DA0;       /* bright pink glow */
+    --ink: #1A0010;              /* dark text on white buttons */
+    --white: #FFFFFF;
+
+    --nav-bg: rgba(40, 0, 25, 0.35);
+    --nav-border: rgba(255, 255, 255, 0.14);
+    --nav-shadow: 0 18px 50px -22px rgba(20, 0, 12, 0.55);
+
+    --maxw: 1440px;
+    --gutter: clamp(20px, 4vw, 56px);
+    --radius-pill: 28px;
+    --radius-btn: 12px;
+
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--white);
+    background: #2a0019;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  img { display: block; max-width: 100%; }
+
+  /* Unified page container — identical geometry to the navbar (.nav-wrap) so
+     every section's content aligns to the same left/right line as the logo.
+     The 26px inset matches the navbar's internal logo padding. */
+  .container {
+    width: calc(100% - 2 * var(--gutter));
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: 26px;
+  }
+
+  /* Desktop-only forced line break in titles (mobile wraps naturally). */
+  .ttl-br { display: none; }
+  @media (min-width: 981px) { .ttl-br { display: inline; } }
+
+  /* ============================================================
+     HERO SECTION
+  ============================================================ */
+  /* The hero is a tall scroll driver; its inner stage is pinned (sticky) so
+     the van image sequence plays as the user scrolls ~half a screen. */
+  .hero {
+    position: relative;
+    height: 150vh;            /* 100vh visible + 50vh of scroll travel (quick, controlled) */
+    background: var(--brand); /* fallback while gradient stage is sticky */
+  }
+  .hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 600px;
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* rich magenta gradient: fallback behind the full-bleed van frames */
+    background:
+      radial-gradient(120% 90% at 85% 40%, var(--brand-glow) 0%, rgba(255,45,160,0) 55%),
+      radial-gradient(110% 110% at 12% 8%, var(--brand-deep) 0%, rgba(122,0,72,0) 45%),
+      linear-gradient(135deg, #B00069 0%, var(--brand) 52%, #FF1FA0 100%);
+  }
+  /* readability scrim so the bottom copy stays legible over the van's floor */
+  .hero-sticky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(74,0,42,0) 48%, rgba(60,0,34,0.46) 100%);
+  }
+  /* subtle halftone texture echoing the reference's bottom-left dots */
+  .hero-sticky::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.4px, transparent 1.6px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(80% 80% at 20% 95%, #000 0%, transparent 70%);
+            mask-image: radial-gradient(80% 80% at 20% 95%, #000 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ---------- NAVBAR (floating glass pill) ---------- */
+  .nav-wrap {
+    position: absolute;
+    top: clamp(16px, 2.4vw, 28px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - (var(--gutter) * 2));
+    max-width: var(--maxw);
+    z-index: 50;
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 72px;
+    padding: 0 14px 0 26px;
+    border-radius: var(--radius-pill);
+    background: var(--nav-bg);
+    border: 1px solid var(--nav-border);
+    box-shadow: var(--nav-shadow);
+    -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+  }
+
+  .brand-logo {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.04em;
+    color: var(--white);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .brand-logo sup { font-size: 0.5em; font-weight: 600; top: -0.9em; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 2.4vw, 40px);
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    padding: 8px 2px;
+    border-radius: 6px;
+    transition: color 0.2s var(--ease), opacity 0.2s var(--ease);
+  }
+  .nav-links a:hover { opacity: 0.78; }
+  .nav-links a:focus-visible,
+  .call-btn:focus-visible,
+  .btn:focus-visible,
+  .nav-toggle:focus-visible,
+  .brand-logo:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+  .nav-links .has-caret { display: inline-flex; align-items: center; gap: 6px; }
+
+  .call-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .call-btn:hover { background: rgba(255, 255, 255, 0.20); }
+  .call-btn .icon { width: 17px; height: 17px; flex: none; }
+
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    cursor: pointer;
+  }
+  .nav-toggle .icon { width: 22px; height: 22px; }
+
+  /* mobile dropdown panel */
+  .mobile-menu {
+    display: none;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 22px;
+    background: rgba(40, 0, 25, 0.72);
+    border: 1px solid var(--nav-border);
+    -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+  }
+  .mobile-menu[data-open="true"] { display: block; }
+  .mobile-menu a {
+    display: block;
+    padding: 14px 14px;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 12px;
+  }
+  .mobile-menu a:hover { background: rgba(255, 255, 255, 0.08); }
+  .mobile-menu .call-btn { width: 100%; justify-content: center; margin-top: 8px; }
+
+  /* ---------- HERO LAYOUT ---------- */
+  /* Centered van stage fills the space between navbar and bottom content. */
+  /* full-bleed van container, sits behind navbar + bottom content */
+  .hero-stage {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ---------- HERO BOTTOM CONTENT ROW ---------- */
+  .hero-bottom {
+    position: relative;
+    z-index: 6;
+    flex: none;
+    width: calc(100% - 2 * var(--gutter));   /* same geometry as the navbar */
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: clamp(18px, 3vh, 30px) 0 clamp(36px, 6vh, 64px);
+  }
+  .hero-bottom-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(24px, 3vw, 56px);
+    padding-left: 26px;   /* aligns headline left edge with the navbar logo */
+  }
+  .hero-copy-left { max-width: none; }
+
+  .hero-title {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: clamp(44px, 5.2vw, 84px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--white);
+    max-width: none;
+    text-wrap: balance;
+  }
+
+  .hero-body {
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 460px;
+    padding-bottom: 6px;
+  }
+
+  .hero-ctas {
+    margin-top: clamp(22px, 3vh, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    height: 60px;
+    padding: 0 30px;
+    border-radius: var(--radius-btn);
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease),
+                background 0.22s var(--ease);
+  }
+  .btn .arrow { transition: transform 0.22s var(--ease); }
+  .btn:hover { transform: translateY(-3px); }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  .btn-primary {
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: 0 12px 28px -12px rgba(20, 0, 12, 0.5);
+  }
+  .btn-primary:hover { box-shadow: 0 18px 34px -12px rgba(20, 0, 12, 0.6); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .btn-secondary:hover { background: rgba(255, 255, 255, 0.10); border-color: #fff; }
+
+  /* ---------- VAN VISUAL (scroll-bound frame sequence) ---------- */
+  /* Wrapper fills the stage; fixed box so frames never shift/jump.
+     transform is interpolated on scroll for a continuous, video-like rotation. */
+  .van-stage {
+    position: absolute;
+    inset: 0;
+    transform-origin: center;
+    will-change: transform;
+  }
+  /* All 5 frames stacked full-bleed; opacity is cross-faded on scroll. */
+  .van-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    will-change: opacity;
+  }
+  .van-frame.is-active { opacity: 1; }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width: 980px) {
+    .nav-links, .navbar > .call-btn { display: none; }
+    .nav-toggle { display: inline-flex; }
+
+    .hero-bottom-inner {
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 16px;
+      /* keep the 26px inset so the headline stays aligned with the navbar logo */
+    }
+    .hero-body { max-width: 560px; }
+  }
+
+  @media (max-width: 520px) {
+    .hero-ctas { flex-direction: column; align-items: stretch; }
+    .btn { width: 100%; justify-content: center; }
+  }
+
+  /* ============================================================
+     OUR SERVICES SECTION
+  ============================================================ */
+  .services { background: #FFFFFF; color: var(--ink); }
+  .services .container {
+    padding-block: 120px;
+  }
+
+  .svc-header {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    gap: 80px;
+    align-items: start;
+    margin-bottom: 64px;
+  }
+  .svc-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 24px;
+  }
+  .svc-heading {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: clamp(34px, 3.3vw, 52px);
+    line-height: 1.0;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    color: #050505;
+    max-width: none;
+  }
+  .svc-intro {
+    font-size: 22px;
+    line-height: 1.45;
+    font-weight: 400;
+    color: #4B5563;
+    max-width: 620px;
+    padding-top: 56px;
+  }
+
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .svc-card {
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 520px;
+    transition: border-color 0.25s var(--ease);
+  }
+  .svc-card:hover { border-color: rgba(236, 0, 140, 0.28); }
+
+  .svc-media {
+    position: relative;
+    height: 260px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .svc-media img,
+  .svc-media .svc-ph {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s var(--ease);
+  }
+  .svc-media img {
+    position: relative;
+    z-index: 1;
+  }
+  .svc-card:hover .svc-media img,
+  .svc-card:hover .svc-media .svc-ph { transform: scale(1.03); }
+
+  /* named placeholder until real photos are dropped in assets/services/ */
+  .svc-ph {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #EEF0F3 0%, #DCE0E6 100%);
+    color: #6B7280;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .svc-body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    padding: 32px 28px 36px;
+  }
+  .svc-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #FFF1F8;
+    border: 1px solid rgba(236, 0, 140, 0.14);
+    color: var(--brand);
+    margin-top: -64px;
+    margin-bottom: 28px;
+    transition: background 0.25s var(--ease);
+  }
+  .svc-card:hover .svc-icon { background: #FFE3F1; }
+  .svc-icon svg { width: 30px; height: 30px; }
+
+  .svc-title {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 28px;
+    line-height: 1.05;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    color: #050505;
+    margin-bottom: 18px;
+  }
+  .svc-desc {
+    font-size: 17px;
+    line-height: 1.55;
+    color: #4B5563;
+  }
+
+  @media (max-width: 1024px) {
+    .services .container { padding-block: 96px; }
+    .svc-header { grid-template-columns: 1fr; gap: 32px; margin-bottom: 48px; }
+    .svc-intro { padding-top: 0; max-width: 720px; }
+    .svc-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .services .container { padding-block: 72px; }
+    .svc-grid { grid-template-columns: 1fr; }
+    .svc-card { min-height: 0; }
+  }
+
+  /* ============================================================
+     WHY TEN10 SECTION
+  ============================================================ */
+  .why { background: #FFFFFF; color: var(--ink); }
+  .why .container {
+    padding-block: 120px;
+  }
+
+  .why-header {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    gap: 80px;
+    align-items: start;
+    margin-bottom: 64px;
+  }
+  .why-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 24px;
+  }
+  .why-heading {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: clamp(36px, 3.5vw, 54px);
+    line-height: 1.0;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    color: #050505;
+    max-width: none;
+  }
+  .why-intro {
+    font-size: 20px;
+    line-height: 1.5;
+    color: #4B5563;
+    max-width: 520px;
+    padding-top: 10px;
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+
+  .why-card {
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 28px 26px 34px;
+    transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .why-card:hover {
+    border-color: rgba(236, 0, 140, 0.28);
+    transform: translateY(-4px);
+  }
+
+  .why-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: #FFF1F8;
+    color: var(--brand);
+    margin-bottom: 26px;
+    transition: background 0.25s var(--ease);
+  }
+  .why-card:hover .why-icon { background: #FFE3F1; }
+  .why-icon svg { width: 26px; height: 26px; }
+
+  .why-title {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #050505;
+    margin-bottom: 10px;
+  }
+  .why-desc {
+    font-size: 16px;
+    line-height: 1.55;
+    color: #4B5563;
+  }
+
+  @media (max-width: 1100px) {
+    .why .container { padding-block: 96px; }
+    .why-header { grid-template-columns: 1fr; gap: 28px; margin-bottom: 48px; }
+    .why-intro { padding-top: 0; max-width: 680px; }
+    .why-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .why .container { padding-block: 72px; }
+    .why-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
+
+  /* ============================================================
+     OUR WORK / PROJECTS SECTION
+  ============================================================ */
+  .work { background: #FFFFFF; color: var(--ink); }
+  .work .container {
+    padding-block: 120px;
+  }
+
+  .work-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+  .work-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 22px;
+  }
+  .work-heading {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: clamp(46px, 4.8vw, 78px);
+    line-height: 1.0;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    color: #050505;
+  }
+  .work-heading .dot { color: var(--brand); }
+
+  .work-all {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    height: 60px;
+    padding: 0 28px;
+    border-radius: 14px;
+    background: #050505;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: transform 0.22s var(--ease), background 0.22s var(--ease);
+  }
+  .work-all:hover { transform: translateY(-2px); background: #1a1a1a; }
+  .work-all .arrow { color: var(--brand); transition: transform 0.22s var(--ease); }
+  .work-all:hover .arrow { transform: translateX(4px); }
+
+  /* horizontal scroll-snap carousel */
+  .work-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 72px) / 4);
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .work-track::-webkit-scrollbar { display: none; }
+  .work-track:focus-visible { outline: 3px solid rgba(236, 0, 140, 0.5); outline-offset: 6px; border-radius: 8px; }
+
+  .work-card {
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: border-color 0.25s var(--ease);
+  }
+  .work-card:hover { border-color: rgba(236, 0, 140, 0.28); }
+
+  .work-media {
+    position: relative;
+    aspect-ratio: 5 / 6;
+    width: 100%;
+    overflow: hidden;
+  }
+  .work-media img,
+  .work-media .work-ph {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+  }
+  .work-media img {
+    position: relative;
+    z-index: 1;
+  }
+  .work-card:hover .work-media img,
+  .work-card:hover .work-media .work-ph { transform: scale(1.03); }
+  .work-ph {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #E7EBF0 0%, #D2D8E0 100%);
+    color: #6B7280;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .work-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #050505;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+  .work-badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand);
+  }
+
+  .work-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 24px 28px;
+  }
+  .work-title {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #050505;
+    margin-bottom: 10px;
+  }
+  .work-loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 15px;
+    color: #4B5563;
+  }
+  .work-loc svg { width: 16px; height: 16px; color: var(--brand); flex: none; }
+
+  .work-cat-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: #FFF1F8;
+    color: var(--brand);
+  }
+  .work-cat-icon svg { width: 26px; height: 26px; }
+
+  .work-nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .work-nav button {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 56px;
+    border-radius: 16px;
+    background: #050505;
+    color: var(--brand);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .work-nav button:hover { transform: translateY(-2px); background: #1a1a1a; }
+  .work-nav button:focus-visible { outline: 3px solid rgba(236, 0, 140, 0.55); outline-offset: 3px; }
+  .work-nav button:disabled { opacity: 0.35; cursor: default; transform: none; }
+  .work-nav svg { width: 22px; height: 22px; }
+
+  @media (max-width: 1100px) {
+    .work .container { padding-block: 96px; }
+    .work-track { grid-auto-columns: calc((100% - 24px) / 2); }
+  }
+  @media (max-width: 760px) {
+    .work-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+  }
+  @media (max-width: 600px) {
+    .work .container { padding-block: 72px; }
+    .work-track { grid-auto-columns: 85%; }
+  }
+
+  /* ============================================================
+     NATIONWIDE COVERAGE SECTION
+  ============================================================ */
+  .coverage { background: #F4F5F7; color: var(--ink); }
+  .coverage .container {
+    padding-block: 110px;
+  }
+  .cov-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .cov-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 22px;
+  }
+  .cov-heading {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: clamp(32px, 3.1vw, 48px);
+    line-height: 1.04;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    color: #0B1220;
+    max-width: none;
+  }
+  .cov-heading .dot { color: var(--brand); }
+  .cov-list {
+    list-style: none;
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .cov-list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 18px;
+    color: #374151;
+  }
+  .cov-list .ic {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: #FFF1F8;
+    color: var(--brand);
+    flex: none;
+  }
+  .cov-list .ic svg { width: 20px; height: 20px; }
+
+  .cov-map {
+    position: relative;
+    min-height: 440px;
+    border-radius: 24px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  .cov-map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(236, 0, 140, 0.18) 1.6px, transparent 1.8px);
+    background-size: 20px 20px;
+  }
+  .map-pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 14px;
+    background: #FFFFFF;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+    font-size: 14px;
+    font-weight: 600;
+    color: #0B1220;
+    white-space: nowrap;
+  }
+  .map-pin::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 4px rgba(236, 0, 140, 0.18);
+    flex: none;
+  }
+  .map-region {
+    position: absolute;
+    bottom: 18px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9AA3AF;
+  }
+  .map-region.au { left: 22px; }
+  .map-region.nz { right: 22px; }
+
+  /* ============================================================
+     CONTACT / CTA SECTION
+  ============================================================ */
+  .contact {
+    position: relative;
+    color: #FFFFFF;
+    background:
+      radial-gradient(120% 90% at 85% 25%, var(--brand-glow) 0%, rgba(255,45,160,0) 55%),
+      linear-gradient(135deg, #A8005F 0%, var(--brand) 60%, #FF1FA0 100%);
+  }
+  .contact .container {
+    padding-block: 110px;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 0.95fr 0.95fr 1.05fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .cta-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 22px;
+  }
+  .cta-heading {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: clamp(34px, 2.7vw, 44px);
+    line-height: 1.03;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    color: #FFFFFF;
+  }
+  .cta-heading .dot { color: #5C0036; }
+  .cta-body {
+    margin-top: 22px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 320px;
+  }
+  .cta-btn { margin-top: 32px; }
+
+  .office, .form-card {
+    background: #FFFFFF;
+    color: #0B1220;
+    border-radius: 20px;
+    padding: 26px 24px;
+  }
+  .office h3, .form-card h3 {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+  .office-photo-wrap {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .office-photo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  .office-ph {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-size: 12px;
+    color: #6B7280;
+    padding: 8px;
+    background: linear-gradient(135deg, #E7EBF0, #D2D8E0);
+  }
+  .office-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #374151;
+    margin-bottom: 14px;
+  }
+  .office-row svg { width: 18px; height: 18px; color: var(--brand); flex: none; margin-top: 1px; }
+  .office-row a { color: #374151; }
+  .office-row a:hover { color: var(--brand); }
+  .office-map {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    color: var(--brand);
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .office-map .arrow { transition: transform 0.2s var(--ease); }
+  .office-map:hover .arrow { transform: translateX(4px); }
+
+  .form-card .field { margin-bottom: 14px; }
+  .form-card input,
+  .form-card textarea {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 15px;
+    color: #0B1220;
+    background: #FFFFFF;
+    outline: none;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .form-card input::placeholder,
+  .form-card textarea::placeholder { color: #9AA3AF; }
+  .form-card input:focus,
+  .form-card textarea:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(236, 0, 140, 0.15);
+  }
+  .form-card textarea { min-height: 96px; resize: vertical; }
+  .form-submit {
+    width: 100%;
+    height: 54px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 12px;
+    background: var(--brand);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .form-submit:hover { transform: translateY(-2px); background: #D40080; }
+  .form-submit:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .form-submit .arrow { transition: transform 0.2s var(--ease); }
+  .form-submit:hover .arrow { transform: translateX(4px); }
+  .form-success {
+    display: none;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0B7A3B;
+  }
+  .form-success.show { display: block; }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .coverage .container, .contact .container { padding-block: 88px; }
+    .cov-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid { grid-template-columns: repeat(2, 1fr); }
+    .cta-block { grid-column: 1 / -1; }
+    .form-card { grid-column: 1 / -1; }
+  }
+  @media (max-width: 700px) {
+    .coverage .container, .contact .container { padding-block: 64px; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .contact-grid > * { grid-column: auto; }
+    .cov-map {
+      min-height: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px;
+      align-content: flex-start;
+    }
+    .cov-map::before { display: none; }
+    .map-region { display: none; }
+    .map-pin { position: static; transform: none; }
+  }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  .footer { background: #030E1F; color: #FFFFFF; }
+  .footer .container { padding-block: 0; }
+
+  .f-assist {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .f-assist-left { display: flex; align-items: center; gap: 18px; }
+  .f-assist .badge {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--brand);
+    color: var(--brand);
+    flex: none;
+  }
+  .f-assist .badge svg { width: 24px; height: 24px; }
+  .f-assist p { font-size: 20px; font-weight: 600; color: #FFFFFF; }
+  .f-assist p a { color: var(--brand); font-weight: 700; white-space: nowrap; }
+  .f-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--brand);
+    font-weight: 600;
+    font-size: 18px;
+    white-space: nowrap;
+  }
+  .f-contact .arrow { transition: transform 0.2s var(--ease); }
+  .f-contact:hover .arrow { transform: translateX(4px); }
+
+  .f-cols {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 1.5fr;
+    padding: 56px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .f-col {
+    padding: 0 28px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .f-col:first-child { padding-left: 0; border-left: none; }
+  .f-col h4 { color: var(--brand); font-size: 16px; font-weight: 700; margin-bottom: 22px; }
+  .f-col ul { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .f-col a { color: rgba(255, 255, 255, 0.75); font-size: 16px; transition: color 0.2s var(--ease); }
+  .f-col a:hover { color: #FFFFFF; }
+
+  .f-sub p { color: rgba(255, 255, 255, 0.7); font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
+  .f-sub form {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    padding: 6px;
+    max-width: 400px;
+  }
+  .f-sub input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #FFFFFF;
+    font: inherit;
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+  .f-sub input::placeholder { color: rgba(255, 255, 255, 0.5); }
+  .f-sub form:focus-within { border-color: rgba(236, 0, 140, 0.6); }
+  .f-sub button {
+    border: none;
+    border-radius: 10px;
+    background: var(--brand);
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 0 26px;
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+  }
+  .f-sub button:hover { background: #D40080; }
+  .f-news-success { display: none; margin-top: 12px; font-size: 14px; font-weight: 600; color: #38D27E; }
+  .f-news-success.show { display: block; }
+
+  .f-mid {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 24px;
+    min-height: 220px;
+    padding: 48px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .f-watermark {
+    position: absolute;
+    left: -8px;
+    bottom: 18px;
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: clamp(110px, 17vw, 280px);
+    letter-spacing: -0.06em;
+    line-height: 0.78;
+    color: rgba(255, 255, 255, 0.045);
+    user-select: none;
+    pointer-events: none;
+  }
+  .f-certs { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: 22px; }
+  .cert-img { height: 96px; width: auto; display: block; }
+  .cert { width: 78px; }
+  .cert .mark { border-radius: 6px; padding: 8px 6px 10px; text-align: center; color: #FFFFFF; }
+  .cert .mark .t { display: block; font-size: 9px; font-weight: 700; line-height: 1.1; margin-bottom: 4px; }
+  .cert .mark .check { display: grid; place-items: center; }
+  .cert .mark .check svg { width: 30px; height: 30px; color: #FFFFFF; }
+  .cert figcaption { margin-top: 8px; font-size: 11px; color: rgba(255, 255, 255, 0.7); text-align: center; line-height: 1.3; }
+  .cert.env .mark { background: #46A302; }
+  .cert.hs .mark { background: #F4C400; color: #1A1A1A; }
+  .cert.hs .mark .check svg { color: #1A1A1A; }
+  .cert.q .mark { background: #E0301E; }
+  .f-logo {
+    font-family: "Hanken Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 46px;
+    letter-spacing: -0.04em;
+    color: var(--brand);
+    margin-left: 8px;
+  }
+  .f-logo sup { font-size: 0.4em; top: -1.1em; }
+
+  .f-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 26px 0;
+  }
+  .f-bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .f-bottom-left .copy b { color: var(--brand); font-weight: 600; }
+  .f-bottom-left a { color: rgba(255, 255, 255, 0.7); transition: color 0.2s var(--ease); }
+  .f-bottom-left a:hover { color: #FFFFFF; }
+  .f-social { display: flex; gap: 14px; }
+  .f-social a {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.06);
+    transition: background 0.2s var(--ease);
+  }
+  .f-social a:hover { background: var(--brand); }
+  .f-social svg { width: 20px; height: 20px; }
+
+  @media (max-width: 1024px) {
+    .footer .container { padding-block: 0; }
+    .f-cols { grid-template-columns: repeat(3, 1fr); gap: 40px 28px; padding: 48px 0; }
+    .f-col { padding: 0; border-left: none; }
+    .f-sub { grid-column: 1 / -1; }
+  }
+  @media (max-width: 680px) {
+    .f-assist { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .f-assist p { font-size: 17px; }
+    .f-cols { grid-template-columns: repeat(2, 1fr); }
+    .f-mid { flex-direction: column; align-items: flex-start; min-height: 0; }
+    .f-watermark { position: static; font-size: 22vw; }
+    .f-certs { flex-wrap: wrap; }
+  }
+  @media (max-width: 480px) {
+    .footer .container { padding-block: 0; }
+    .f-bottom { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+    .van-stage { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <section class="hero" id="hero" aria-label="Ten10 — the benchmark for commercial painting">
+    <div class="hero-sticky">
+
+    <!-- ===================== NAVBAR ===================== -->
+    <header class="nav-wrap">
+      <nav class="navbar" aria-label="Primary">
+        <a href="#" class="brand-logo" aria-label="Ten10 home">Ten1O<sup>&reg;</sup></a>
+
+        <ul class="nav-links">
+          <li><a href="#about">About Us</a></li>
+          <li>
+            <a href="#services" class="has-caret">Services
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </li>
+          <li><a href="#video-faqs">Video FAQs</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <a href="tel:0508441010" class="call-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="6" y="2" width="12" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <line x1="10.5" y1="18" x2="13.5" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Call us now on 0508 44 10 10
+        </a>
+
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- mobile dropdown -->
+      <div class="mobile-menu" id="mobile-menu" data-open="false">
+        <a href="#about">About Us</a>
+        <a href="#services">Services</a>
+        <a href="#video-faqs">Video FAQs</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact">Contact</a>
+        <a href="tel:0508441010" class="call-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="6" y="2" width="12" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+            <line x1="10.5" y1="18" x2="13.5" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Call us now on 0508 44 10 10
+        </a>
+      </div>
+    </header>
+
+    <!-- ============ CENTERED VAN — scroll-bound image sequence ============ -->
+    <div class="hero-stage">
+      <div class="van-stage" data-scroll-van>
+        <img class="van-frame is-active" data-frame="0" src="assets/hero-sequence/frame-01.png" alt="Ten10 branded van with two uniformed team members standing beside it" />
+        <img class="van-frame" data-frame="1" src="assets/hero-sequence/frame-02.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="2" src="assets/hero-sequence/frame-03.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="3" src="assets/hero-sequence/frame-04.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="4" src="assets/hero-sequence/frame-05.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="5" src="assets/hero-sequence/frame-06.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="6" src="assets/hero-sequence/frame-07.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="7" src="assets/hero-sequence/frame-08.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="8" src="assets/hero-sequence/frame-09.png" alt="" aria-hidden="true" />
+        <img class="van-frame" data-frame="9" src="assets/hero-sequence/frame-10.png" alt="" aria-hidden="true" />
+      </div>
+    </div>
+
+    <!-- ===================== BOTTOM CONTENT ROW ===================== -->
+    <div class="hero-bottom">
+      <div class="hero-bottom-inner">
+        <div class="hero-copy-left">
+          <h1 class="hero-title">The benchmark for<br class="ttl-br"> commercial painting.</h1>
+          <div class="hero-ctas">
+            <a href="#quote" class="btn btn-primary">
+              Get a Quote
+              <svg class="arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#services" class="btn btn-secondary">
+              View Services
+              <svg class="arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <p class="hero-body">Premium commercial painting, delivered with precision, safety, and a standard clients can rely on.</p>
+      </div>
+    </div>
+
+    </div><!-- /.hero-sticky -->
+  </section>
+
+  <!-- ===================== OUR SERVICES ===================== -->
+  <section class="services" id="services" aria-labelledby="svc-heading">
+    <div class="container">
+      <div class="svc-header">
+        <div>
+          <p class="svc-eyebrow">Our Services</p>
+          <h2 class="svc-heading" id="svc-heading">Specialist painting services for every industry</h2>
+        </div>
+        <p class="svc-intro">
+          From offices and facilities to industrial plants, schools and healthcare
+          environments, our expert teams deliver tailored painting solutions with
+          precision, safety and minimal disruption.
+        </p>
+      </div>
+
+      <!-- cards rendered data-driven from the services[] array below -->
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY TEN10 ===================== -->
+  <section class="why" id="why-ten10" aria-labelledby="why-heading">
+    <div class="container">
+      <div class="why-header">
+        <div>
+          <p class="why-eyebrow">Why Ten10</p>
+          <h2 class="why-heading" id="why-heading">Operational excellence, every time.</h2>
+        </div>
+        <p class="why-intro">
+          Our systems, people and processes are built to deliver consistent quality,
+          safety and transparency&mdash;on every project, every time.
+        </p>
+      </div>
+
+      <!-- cards rendered data-driven from the reasons[] array below -->
+      <div class="why-grid" id="why-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== OUR WORK / PROJECTS ===================== -->
+  <section class="work" id="our-work" aria-labelledby="work-heading">
+    <div class="container">
+      <div class="work-header">
+        <div>
+          <p class="work-eyebrow">Our Work</p>
+          <h2 class="work-heading" id="work-heading">Projects we&rsquo;re proud of<span class="dot">.</span></h2>
+        </div>
+        <a href="#projects" class="work-all">
+          View all projects
+          <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- cards rendered data-driven from the projects[] array below -->
+      <div class="work-track" id="work-track" tabindex="0" role="region" aria-label="Project gallery, scrollable"></div>
+
+      <div class="work-nav">
+        <button type="button" id="work-prev" aria-label="Previous projects" aria-controls="work-track">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" id="work-next" aria-label="Next projects" aria-controls="work-track">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== NATIONWIDE COVERAGE ===================== -->
+  <section class="coverage" id="coverage" aria-labelledby="cov-heading">
+    <div class="container">
+      <div class="cov-grid">
+        <div>
+          <p class="cov-eyebrow">Nationwide Coverage</p>
+          <h2 class="cov-heading" id="cov-heading">We work across Australia and New Zealand<span class="dot">.</span></h2>
+          <ul class="cov-list">
+            <li>
+              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+              Local teams in every region
+            </li>
+            <li>
+              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg></span>
+              National capability and resources
+            </li>
+            <li>
+              <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.2 2.2L15.5 9.5"/></svg></span>
+              Consistent Ten10 standards
+            </li>
+          </ul>
+        </div>
+
+        <!-- Stylized coverage panel. Swap for a real map asset later if desired. -->
+        <div class="cov-map" role="img" aria-label="Map showing Ten10 coverage across Australia (Perth, Melbourne, Sydney, Brisbane) and New Zealand (Auckland, Hamilton, Wellington, Christchurch)">
+          <span class="map-region au">Australia</span>
+          <span class="map-region nz">New Zealand</span>
+          <span class="map-pin" style="top:46%;left:9%">Perth</span>
+          <span class="map-pin" style="top:24%;left:44%">Brisbane</span>
+          <span class="map-pin" style="top:48%;left:42%">Sydney</span>
+          <span class="map-pin" style="top:66%;left:34%">Melbourne</span>
+          <span class="map-pin" style="top:18%;left:74%">Auckland</span>
+          <span class="map-pin" style="top:33%;left:80%">Hamilton</span>
+          <span class="map-pin" style="top:52%;left:84%">Wellington</span>
+          <span class="map-pin" style="top:68%;left:79%">Christchurch</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT / CTA ===================== -->
+  <section class="contact" id="contact" aria-labelledby="cta-heading">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="cta-block">
+          <p class="cta-eyebrow">Ready to start your next project?</p>
+          <h2 class="cta-heading" id="cta-heading">Let&rsquo;s create something exceptional<span class="dot">.</span></h2>
+          <p class="cta-body">Talk to our team about your project and get a tailored solution.</p>
+          <a href="#message-form" class="btn btn-primary cta-btn">
+            Request a Quote
+            <svg class="arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+
+        <article class="office">
+          <h3>Auckland Head Office</h3>
+          <div class="office-photo-wrap">
+            <img class="office-photo" src="assets/offices/auckland.jpg" alt="Ten10 Auckland Head Office building exterior" loading="lazy" onerror="this.style.display='none';">
+            <div class="office-ph">Auckland office exterior photo</div>
+          </div>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v3a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg><a href="tel:0508441010">0508 44 10 10</a></p>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:info@ten10.nz">info@ten10.nz</a></p>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>2/8 Boundary Road, Northcote, Auckland 0627, New Zealand</span></p>
+          <a class="office-map" href="#map" aria-label="View Auckland Head Office on map">View on Map <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </article>
+
+        <article class="office">
+          <h3>Sydney Office</h3>
+          <div class="office-photo-wrap">
+            <img class="office-photo" src="assets/offices/sydney.jpg" alt="Ten10 Sydney Office building exterior" loading="lazy" onerror="this.style.display='none';">
+            <div class="office-ph">Sydney office exterior photo</div>
+          </div>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v3a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1Z"/></svg><a href="tel:1300101010">1300 10 1010</a></p>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:info@ten10.com.au">info@ten10.com.au</a></p>
+          <p class="office-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>680 George Street, Haymarket, Sydney 2000, NSW, Australia</span></p>
+          <a class="office-map" href="#map" aria-label="View Sydney Office on map">View on Map <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </article>
+
+        <div class="form-card">
+          <h3>Send us a message</h3>
+          <form id="message-form" novalidate>
+            <div class="field">
+              <label class="visually-hidden" for="f-name">Full name</label>
+              <input id="f-name" name="name" type="text" placeholder="Full name" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label class="visually-hidden" for="f-email">Email address</label>
+              <input id="f-email" name="email" type="email" placeholder="Email address" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label class="visually-hidden" for="f-phone">Phone number</label>
+              <input id="f-phone" name="phone" type="tel" placeholder="Phone number" autocomplete="tel" />
+            </div>
+            <div class="field">
+              <label class="visually-hidden" for="f-msg">Tell us about your project</label>
+              <textarea id="f-msg" name="message" placeholder="Tell us about your project" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">
+              Send Enquiry
+              <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <p class="form-success" id="form-success" role="status" aria-live="polite">Thanks — we&rsquo;ll be in touch shortly.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container">
+      <!-- assistance bar -->
+      <div class="f-assist">
+        <div class="f-assist-left">
+          <span class="badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13a2 2 0 0 1 2-2h1v5H6a2 2 0 0 1-2-2zM20 13a2 2 0 0 0-2-2h-1v5h1a2 2 0 0 0 2-2z"/><path d="M20 16v1a3 3 0 0 1-3 3h-3"/></svg>
+          </span>
+          <p>Need further assistance? Contact us on <a href="tel:0508441010">0508 44 10 10</a></p>
+        </div>
+        <a class="f-contact" href="#contact">
+          <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Contact Us
+        </a>
+      </div>
+
+      <!-- link columns -->
+      <div class="f-cols">
+        <nav class="f-col" aria-label="About Ten10">
+          <h4>About Ten10</h4>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#why-ten10">Why Ten10</a></li>
+            <li><a href="#values">Our Values</a></li>
+            <li><a href="#careers">Careers</a></li>
+            <li><a href="#resources">Resources</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Our Services">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#services">Commercial Painting</a></li>
+            <li><a href="#services">Industrial Painting</a></li>
+            <li><a href="#services">Education</a></li>
+            <li><a href="#services">Healthcare</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Our Work">
+          <h4>Our Work</h4>
+          <ul>
+            <li><a href="#our-work">Projects</a></li>
+            <li><a href="#case-studies">Case Studies</a></li>
+            <li><a href="#video-faqs">Video FAQs</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Locations">
+          <h4>Locations</h4>
+          <ul>
+            <li><a href="#contact">Auckland</a></li>
+            <li><a href="#contact">Sydney</a></li>
+            <li><a href="#coverage">Other Locations</a></li>
+          </ul>
+        </nav>
+        <nav class="f-col" aria-label="Connect">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#careers">Careers</a></li>
+          </ul>
+        </nav>
+        <div class="f-col f-sub">
+          <h4>Subscribe to Updates</h4>
+          <p>Get the latest news, insights and project updates delivered to your inbox.</p>
+          <form id="f-newsletter" novalidate>
+            <label class="visually-hidden" for="f-news-email">Your email address</label>
+            <input id="f-news-email" name="email" type="email" placeholder="Your email address" autocomplete="email" required />
+            <button type="submit">Join</button>
+          </form>
+          <p class="f-news-success" id="f-news-success" role="status" aria-live="polite">You&rsquo;re subscribed — thanks!</p>
+        </div>
+      </div>
+
+      <!-- watermark + certifications -->
+      <div class="f-mid">
+        <span class="f-watermark" aria-hidden="true">Ten1O</span>
+        <div class="f-certs">
+          <img class="cert-img" src="assets/certifications/Environment-ISO-14001.png.webp" alt="Telarc registered — Environment, ISO 14001" loading="lazy">
+          <img class="cert-img" src="assets/certifications/Health-Safety-ISO-45001-715x1536.png.webp" alt="Telarc registered — Health and Safety, ISO 45001" loading="lazy">
+          <img class="cert-img" src="assets/certifications/Quality-ISO-9001.png.webp" alt="Telarc registered — Quality, ISO 9001" loading="lazy">
+          <span class="f-logo">Ten1O<sup>&reg;</sup></span>
+        </div>
+      </div>
+
+      <!-- bottom bar -->
+      <div class="f-bottom">
+        <div class="f-bottom-left">
+          <span class="copy">Copyright <b>Ten10 Ltd</b> &copy; <span id="f-year">2022</span>.</span>
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#terms">Terms &amp; Conditions</a>
+        </div>
+        <div class="f-social">
+          <a href="#" aria-label="Ten10 on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Ten10 on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5ZM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3 0-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H9z"/></svg></a>
+          <a href="#" aria-label="Ten10 on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.4-.43-5.03a2.6 2.6 0 0 0-1.83-1.84C19.1 4.7 12 4.7 12 4.7s-7.1 0-8.74.43A2.6 2.6 0 0 0 1.43 6.97 27 27 0 0 0 1 12c0 1.7 0 3.4.43 5.03a2.6 2.6 0 0 0 1.83 1.84C4.9 19.3 12 19.3 12 19.3s7.1 0 8.74-.43a2.6 2.6 0 0 0 1.83-1.84C23 15.4 23 13.7 23 12Zm-13 3.2V8.8l5.5 3.2z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Our Services: data-driven card rendering ----
+    (function () {
+      var ICONS = {
+        building:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg>',
+        factory:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21h20"/><path d="M4 21V10l6 4V10l6 4V6l4-2v17"/><path d="M7 21v-3M11 21v-3M15 21v-3"/></svg>',
+        "graduation-cap":
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12.5V17c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-4.5"/></svg>',
+        "medical-cross":
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 3.5h3a1 1 0 0 1 1 1V9h4.5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H14.5v4.5a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V14H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h4.5V4.5a1 1 0 0 1 1-1Z"/></svg>'
+      };
+
+      var services = [
+        {
+          title: "Commercial Painting",
+          desc: "High-quality finishes for offices, retail, hospitality and multi-site commercial spaces.",
+          icon: "building",
+          img: "assets/services/commercial.jpg",
+          alt: "Modern commercial office building exterior with a clean glass facade",
+          ph: "Modern commercial office building exterior with clean glass facade"
+        },
+        {
+          title: "Industrial Painting",
+          desc: "Protective coatings and asset maintenance for demanding industrial environments and infrastructure.",
+          icon: "factory",
+          img: "assets/services/industrial.jpg",
+          alt: "Industrial processing plant with pipes and silos",
+          ph: "Industrial plant, factory pipes, silos or processing facility"
+        },
+        {
+          title: "Education",
+          desc: "Low-disruption painting solutions for schools, universities and learning environments.",
+          icon: "graduation-cap",
+          img: "assets/services/education.jpg",
+          alt: "Modern school or university campus building exterior",
+          ph: "Modern school or university campus building exterior"
+        },
+        {
+          title: "Healthcare",
+          desc: "Specialist painting for hospitals, clinics and care facilities where hygiene and safety matter most.",
+          icon: "medical-cross",
+          img: "assets/services/healthcare.jpg",
+          alt: "Clean, bright hospital corridor interior",
+          ph: "Clean hospital or healthcare interior corridor"
+        }
+      ];
+
+      var grid = document.getElementById("svc-grid");
+      if (!grid) return;
+
+      services.forEach(function (s) {
+        var card = document.createElement("article");
+        card.className = "svc-card";
+        card.innerHTML =
+          '<div class="svc-media">' +
+            '<img src="' + s.img + '" alt="' + s.alt + '" loading="lazy" ' +
+              'onerror="this.style.display=&quot;none&quot;;">' +
+            '<div class="svc-ph">' + s.ph + '</div>' +
+          '</div>' +
+          '<div class="svc-body">' +
+            '<div class="svc-icon" aria-hidden="true">' + ICONS[s.icon] + '</div>' +
+            '<h3 class="svc-title">' + s.title + '</h3>' +
+            '<p class="svc-desc">' + s.desc + '</p>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    })();
+
+    // ---- Why Ten10: data-driven feature grid ----
+    (function () {
+      var S = 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+      var WHY_ICONS = {
+        award: '<svg viewBox="0 0 24 24" ' + S + '><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>',
+        chart: '<svg viewBox="0 0 24 24" ' + S + '><path d="M3 3v18h18"/><path d="M7 16v-3M12 16V9M17 16v-6"/></svg>',
+        shield: '<svg viewBox="0 0 24 24" ' + S + '><path d="M12 3 4 6v6c0 5 3.5 7.7 8 9 4.5-1.3 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+        clock: '<svg viewBox="0 0 24 24" ' + S + '><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+        certificate: '<svg viewBox="0 0 24 24" ' + S + '><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><path d="M14 3v5h5"/><circle cx="17" cy="14.5" r="3"/><path d="m15.4 16.8-.4 4 2-1 2 1-.4-4"/></svg>',
+        dollar: '<svg viewBox="0 0 24 24" ' + S + '><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11"/><path d="M14.7 9c-.6-.6-1.7-1-2.7-1-1.5 0-2.6.8-2.6 1.9 0 2.7 5.3 1.5 5.3 4.2 0 1.1-1.2 2-2.7 2-1.1 0-2.2-.4-2.8-1"/></svg>',
+        users: '<svg viewBox="0 0 24 24" ' + S + '><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M15.5 6.2A3.2 3.2 0 0 1 15.5 12M17 14.7c2 .6 3.5 2.4 3.5 4.8"/></svg>',
+        leaf: '<svg viewBox="0 0 24 24" ' + S + '><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8a7 7 0 0 1-7 7Z"/><path d="M2 22c2-6 6-8.5 9-9.5"/></svg>',
+        bulb: '<svg viewBox="0 0 24 24" ' + S + '><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg>',
+        person: '<svg viewBox="0 0 24 24" ' + S + '><circle cx="12" cy="9" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>'
+      };
+
+      var reasons = [
+        { icon: "award", title: "Quality Standards", desc: "Consistent quality through proven systems and inspections." },
+        { icon: "chart", title: "Seamless Reporting", desc: "Real-time updates and clear communication at every stage." },
+        { icon: "shield", title: "Highest Safety Standards", desc: "Safety is our priority across every site, every day." },
+        { icon: "clock", title: "Seamless Project Delivery", desc: "On time, on budget and delivered to brief." },
+        { icon: "certificate", title: "ISO Accreditation", desc: "Certified systems you can trust for peace of mind." },
+        { icon: "dollar", title: "No Variations", desc: "Clear scope, upfront pricing and no hidden surprises." },
+        { icon: "users", title: "Capability", desc: "Skilled teams and systems to deliver complex projects with confidence." },
+        { icon: "leaf", title: "Highest Environmental Standards", desc: "Sustainable solutions that protect people and the environment." },
+        { icon: "bulb", title: "Knowledge", desc: "Deep industry expertise and technical know-how across sectors." },
+        { icon: "person", title: "Ten10 Culture", desc: "A team that takes pride in doing things the right way." }
+      ];
+
+      var grid = document.getElementById("why-grid");
+      if (!grid) return;
+
+      reasons.forEach(function (r) {
+        var card = document.createElement("article");
+        card.className = "why-card";
+        card.innerHTML =
+          '<div class="why-icon" aria-hidden="true">' + WHY_ICONS[r.icon] + '</div>' +
+          '<h3 class="why-title">' + r.title + '</h3>' +
+          '<p class="why-desc">' + r.desc + '</p>';
+        grid.appendChild(card);
+      });
+    })();
+
+    // ---- Our Work: data-driven carousel ----
+    (function () {
+      var SW = 'fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+      var WORK_ICONS = {
+        waves: '<svg viewBox="0 0 24 24" ' + SW + '><path d="M2 7c1.4 1.3 2.6 1.3 4 0s2.6-1.3 4 0 2.6 1.3 4 0 2.6-1.3 4 0"/><path d="M2 12c1.4 1.3 2.6 1.3 4 0s2.6-1.3 4 0 2.6 1.3 4 0 2.6-1.3 4 0"/><path d="M2 17c1.4 1.3 2.6 1.3 4 0s2.6-1.3 4 0 2.6 1.3 4 0 2.6-1.3 4 0"/></svg>',
+        factory: '<svg viewBox="0 0 24 24" ' + SW + '><path d="M2 21h20"/><path d="M4 21V10l6 4V10l6 4V6l4-2v17"/><path d="M7 21v-3M11 21v-3M15 21v-3"/></svg>',
+        cap: '<svg viewBox="0 0 24 24" ' + SW + '><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12.5V17c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-4.5"/></svg>',
+        cross: '<svg viewBox="0 0 24 24" ' + SW + '><path d="M10.5 3.5h3a1 1 0 0 1 1 1V9h4.5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H14.5v4.5a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V14H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h4.5V4.5a1 1 0 0 1 1-1Z"/></svg>'
+      };
+      var PIN = '<svg viewBox="0 0 24 24" ' + SW + '><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+
+      var projects = [
+        { title: "Coates Aquatic Centre", loc: "Perth, WA", category: "Recreation", icon: "waves", img: "assets/projects/coates-aquatic.jpg", alt: "Coates Aquatic Centre, a modern recreation building with a pool", ph: "Modern aquatic / recreation centre exterior" },
+        { title: "Fletcher Building", loc: "Auckland, NZ", category: "Industrial", icon: "factory", img: "assets/projects/fletcher-building.jpg", alt: "Fletcher Building industrial facility exterior", ph: "Large industrial / corporate building exterior" },
+        { title: "University Campus", loc: "Sydney, AUS", category: "Education", icon: "cap", img: "assets/projects/university-campus.jpg", alt: "Modern university campus building with students walking", ph: "Modern university campus building exterior" },
+        { title: "Healthcare Centre", loc: "Wellington, NZ", category: "Healthcare", icon: "cross", img: "assets/projects/healthcare-centre.jpg", alt: "Modern healthcare centre building exterior at dusk", ph: "Modern healthcare centre building exterior" }
+      ];
+
+      var track = document.getElementById("work-track");
+      if (!track) return;
+
+      projects.forEach(function (p) {
+        var card = document.createElement("article");
+        card.className = "work-card";
+        card.innerHTML =
+          '<div class="work-media">' +
+            '<img src="' + p.img + '" alt="' + p.alt + '" loading="lazy" ' +
+              'onerror="this.style.display=&quot;none&quot;;">' +
+            '<div class="work-ph">' + p.ph + '</div>' +
+            '<span class="work-badge">' + p.category + '</span>' +
+          '</div>' +
+          '<div class="work-foot">' +
+            '<div>' +
+              '<h3 class="work-title">' + p.title + '</h3>' +
+              '<span class="work-loc">' + PIN + p.loc + '</span>' +
+            '</div>' +
+            '<div class="work-cat-icon" aria-hidden="true">' + WORK_ICONS[p.icon] + '</div>' +
+          '</div>';
+        track.appendChild(card);
+      });
+
+      // carousel controls
+      var prev = document.getElementById("work-prev");
+      var next = document.getElementById("work-next");
+
+      function step() {
+        var card = track.querySelector(".work-card");
+        if (!card) return track.clientWidth;
+        var gap = parseFloat(getComputedStyle(track).columnGap) || 24;
+        return card.getBoundingClientRect().width + gap;
+      }
+      function updateButtons() {
+        var maxScroll = track.scrollWidth - track.clientWidth - 1;
+        prev.disabled = track.scrollLeft <= 0;
+        next.disabled = track.scrollLeft >= maxScroll;
+      }
+      prev.addEventListener("click", function () { track.scrollBy({ left: -step(), behavior: "smooth" }); });
+      next.addEventListener("click", function () { track.scrollBy({ left: step(), behavior: "smooth" }); });
+      track.addEventListener("scroll", function () {
+        window.requestAnimationFrame(updateButtons);
+      }, { passive: true });
+      window.addEventListener("resize", updateButtons);
+      // ResizeObserver reliably refreshes button state when the breakpoint
+      // changes the number of visible cards (more robust than resize alone).
+      if (typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(updateButtons).observe(track);
+      }
+      updateButtons();
+    })();
+
+    // ---- Contact form: client-side submit feedback ----
+    (function () {
+      var form = document.getElementById("message-form");
+      if (!form) return;
+      var success = document.getElementById("form-success");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        form.reset();
+        if (success) {
+          success.classList.add("show");
+          success.focus && success.focus();
+          setTimeout(function () { success.classList.remove("show"); }, 5000);
+        }
+      });
+    })();
+
+    // ---- Footer: dynamic year + newsletter feedback ----
+    (function () {
+      var yr = document.getElementById("f-year");
+      if (yr) yr.textContent = new Date().getFullYear();
+
+      var nf = document.getElementById("f-newsletter");
+      if (!nf) return;
+      var ok = document.getElementById("f-news-success");
+      nf.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!nf.checkValidity()) { nf.reportValidity(); return; }
+        nf.reset();
+        if (ok) {
+          ok.classList.add("show");
+          setTimeout(function () { ok.classList.remove("show"); }, 5000);
+        }
+      });
+    })();
+
+    // Mobile menu toggle
+    (function () {
+      var toggle = document.querySelector(".nav-toggle");
+      var menu = document.getElementById("mobile-menu");
+      if (toggle && menu) {
+        toggle.addEventListener("click", function () {
+          var open = menu.getAttribute("data-open") === "true";
+          menu.setAttribute("data-open", String(!open));
+          toggle.setAttribute("aria-expanded", String(!open));
+          toggle.setAttribute("aria-label", open ? "Open menu" : "Close menu");
+        });
+      }
+    })();
+
+    // Scroll-bound van image sequence — cross-fade frames + subtle transform.
+    (function () {
+      var hero = document.getElementById("hero");
+      var stage = document.querySelector("[data-scroll-van]");
+      if (!hero || !stage) return;
+
+      var frames = Array.prototype.slice.call(stage.querySelectorAll(".van-frame"));
+      var N = frames.length;
+      if (N === 0) return;
+
+      // Preload every frame so nothing flickers mid-scroll.
+      frames.forEach(function (img) {
+        if (!img.complete) { var pre = new Image(); pre.src = img.src; }
+      });
+
+      // Reduced motion: no pin/animation — collapse to a normal 100vh hero
+      // and show the full side-profile frame statically.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        hero.style.height = "100vh";
+        var sticky = hero.querySelector(".hero-sticky");
+        if (sticky) sticky.style.position = "relative";
+        var mid = Math.floor((N - 1) / 2);
+        frames.forEach(function (f, i) {
+          f.style.opacity = (i === mid) ? 1 : 0;
+        });
+        return;
+      }
+
+      function setProgress(p) {
+        p = Math.min(1, Math.max(0, p));
+
+        // Show exactly one frame per scroll segment — a clean hard swap,
+        // no low-opacity blending of the incoming frame.
+        var idx = Math.round(p * (N - 1));
+        for (var i = 0; i < N; i++) {
+          frames[i].style.opacity = (i === idx) ? 1 : 0;
+        }
+
+        // Continuous transform so 5 stills read as one premium rotation.
+        // Base scale slightly >1 overscans the full-bleed frame so the small
+        // horizontal drift never exposes an edge.
+        var tx = (p - 0.5) * -14;                        // subtle drift toward profile
+        var scale = 1.04 + 0.03 * Math.sin(p * Math.PI); // gentle swell at mid
+        stage.style.transform =
+          "translateX(" + tx.toFixed(2) + "px) scale(" + scale.toFixed(3) + ")";
+      }
+
+      var ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+          var rect = hero.getBoundingClientRect();
+          var travel = hero.offsetHeight - window.innerHeight;
+          var scrolled = Math.min(Math.max(-rect.top, 0), travel);
+          setProgress(travel > 0 ? scrolled / travel : 0);
+          ticking = false;
+        });
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      onScroll();
+    })();
+  </script>
+</body>
+</html>

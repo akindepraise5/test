@@ -1,6 +1,6 @@
 {
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/ten10-hero.html" }
-  ],
-  "cleanUrls": true
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
