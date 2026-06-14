@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(ls \"C:\\\\Users\\\\USER\\\\.claude\\\\skills\\\\\" 2>/dev/null || echo \"skills dir does not exist\")",
+      "PowerShell(ls \"C:\\\\Users\\\\USER\\\\.claude\\\\skills\\\\\" 2>$null; if \\(-not \\(Test-Path \"C:\\\\Users\\\\USER\\\\.claude\\\\skills\"\\)\\) { \"skills dir does not exist\" })",
+      "mcp__visualize__read_me",
+      "WebFetch(domain:github.com)",
+      "Bash(npm --version)",
+      "Bash(npm install *)"
+    ]
+  }
+}
